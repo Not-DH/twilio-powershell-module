@@ -51,7 +51,11 @@ function Connect-TwilioService {
 
         [Parameter()]
         [string]
-        $SID
+        $SID,
+
+        [Parameter()]
+        [string]
+        $BaseURI = "https://api.twilio.com"
     )
 
     if ($PSBoundParameters.ContainsKey('Credential')) {
@@ -62,10 +66,10 @@ function Connect-TwilioService {
     }
 
     if ($PSBoundParameters.ContainsKey('SID')) {
-        Set-TwilioApiUri -SID $SID
+        Set-TwilioApiUri -SID $SID -BaseURI $BaseURI
     } else
     {
-        Set-TwilioApiUri -SID $Script:TWILIO_CREDS.UserName
+        Set-TwilioApiUri -SID $Script:TWILIO_CREDS.UserName -BaseURI $BaseURI
     }
  
     if ((Test-TwilioCredentials -Credential $Script:TWILIO_CREDS) -eq $true) {
@@ -177,10 +181,14 @@ function Set-TwilioApiUri {
 
         [Parameter()]
         [string]
-        $ApiVersion = "2010-04-01"
+        $ApiVersion = "2010-04-01",
+
+        [Parameter()]
+        [string]
+        $BaseURI = "https://api.twilio.com"
     )
 
-    $Script:TWILIO_API_URI = "https://api.twilio.com/$ApiVersion/Accounts/$SID"
+    $Script:TWILIO_API_URI = "$BaseURI/$ApiVersion/Accounts/$SID"
 } # End of Set-TwilioApiUri
 
 function Get-TwilioAccountPhoneNumber {
